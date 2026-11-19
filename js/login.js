@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   localStorage.setItem('userCpf', documentValue); 
 
   alert('Login realizado com sucesso!');
-  window.location.href = 'tela_paciente/paciente.html'; 
+  window.location.href = 'paciente.html'; 
 } else {
           alert('Credenciais inválidas. Verifique seu CPF/Matrícula e senha.');
         }
@@ -103,3 +103,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// 4. Funcionalidade do botão de alternar visualização da senha (o "olho")
+  const botoesToggleSenha = document.querySelectorAll('.toggle-password');
+
+  botoesToggleSenha.forEach(button => {
+    button.addEventListener('click', () => {
+      // Encontra o input que está dentro do mesmo container (.input-wrapper)
+      const inputWrapper = button.closest('.input-wrapper');
+      const input = inputWrapper ? inputWrapper.querySelector('input') : null;
+
+      if (input) {
+        // Alterna entre 'password' e 'text'
+        const tipoAtual = input.getAttribute('type');
+        if (tipoAtual === 'password') {
+          input.setAttribute('type', 'text');
+        } else {
+          input.setAttribute('type', 'password');
+        }
+      }
+    });
+  });
