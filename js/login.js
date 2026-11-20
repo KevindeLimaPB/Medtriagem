@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnProfissional = document.getElementById("btn-profissional");
   const labelId = document.getElementById("label-id");
   const inputId = document.getElementById("input-id");
-  const inputSenha = document.getElementById("senha"); // ID corrigido conforme o seu HTML!
+  const inputSenha = document.getElementById("senha"); 
   const loginForm = document.getElementById("login-form");
   const firstTimeBox = document.querySelector(".first-time-box");
 
