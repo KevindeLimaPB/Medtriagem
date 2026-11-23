@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById("login-form");
   const firstTimeBox = document.querySelector(".first-time-box");
 
+  // Referências aos textos da caixa inferior. Elas mudam conforme o perfil.
+  const firstTimeText = firstTimeBox ? firstTimeBox.querySelector("p") : null;
+  const firstTimeLink = firstTimeBox ? firstTimeBox.querySelector("a") : null;
+
   let perfilAtivo = "paciente";
 
   // 1. Alternância entre Paciente e Profissional
@@ -17,11 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
       btnPaciente.classList.add("active");
       btnProfissional.classList.remove("active");
 
+      // Ao voltar para paciente, restabelecemos o CPF e o cadastro paciente.
       labelId.textContent = "CPF";
       inputId.placeholder = "000.000.000-00";
       inputId.value = "";
 
-      if (firstTimeBox) firstTimeBox.style.display = "block";
+      if (firstTimeBox) {
+        firstTimeBox.style.display = "block";
+        if (firstTimeText) firstTimeText.textContent = "Primeira vez aqui?";
+        if (firstTimeLink) {
+          firstTimeLink.textContent = "Criar meu acesso";
+          firstTimeLink.href = "cadastro.html";
+        }
+      }
     });
 
     btnProfissional.addEventListener("click", () => {
@@ -34,7 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
       inputId.placeholder = "Digite sua matrícula";
       inputId.value = "";
 
-      if (firstTimeBox) firstTimeBox.style.display = "none";
+      if (firstTimeBox) {
+        // Estado inicial: primeiro acesso do paciente
+        firstTimeBox.style.display = "block";
+        if (firstTimeText) firstTimeText.textContent = "Primeira vez aqui?";
+        if (firstTimeLink) {
+          firstTimeLink.textContent = "Cadastrar como médico";
+          firstTimeLink.href = "cadastro_medico.html";
+        }
+      }
     });
 
     // 2. Máscara dinâmica de CPF ou Matrícula

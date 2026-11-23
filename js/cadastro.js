@@ -109,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (resposta.ok) {
-        alert('Acesso criado com sucesso!');
         window.location.href = 'index.html';
       } else {
         const erroData = await resposta.json().catch(() => ({}));
