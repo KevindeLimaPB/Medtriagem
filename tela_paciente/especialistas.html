@@ -38,24 +38,32 @@
       <p>Escolha a especialidade e a cidade para ver quem está disponível.</p>
     </div>
 
-    <!-- Barra de Busca -->
     <div class="search-box">
       <div class="input-group">
         <label for="filtro-especialidade">Especialidade ou doença</label>
-        <select id="filtro-especialidade">
-          <option value="Todas">Todas as especialidades</option>
-          <option value="Oftalmologista">Oftalmologista</option>
-          <option value="Cardiologista">Cardiologista</option>
-          <option value="Dermatologista">Dermatologista</option>
-          <option value="Clínico geral">Clínico geral</option>
-        </select>
+      <select id="filtro-especialidade">
+ <option value="Todas">Todas as especialidades</option>
+<option value="CLINICO_GERAL">Clínica geral</option>
+<option value="PEDIATRA">Pediatria</option>
+<option value="GINECOLOGISTA">Ginecologia</option>
+<option value="CARDIOLOGISTA">Cardiologia</option>
+<option value="DERMANTOLOGISTA">Dermatologia</option>
+<option value="OFTALMOLOGISTA">Oftalmologia</option>
+<option value="ORTOPEDISTA">Ortopedia</option>
+<option value="NEUROLOGISTA">Neurologia</option>
+<option value="PSIQUIATRA">Psiquiatria</option>
+<option value="ENDOCRINOLOGISTA">Endocrinologia</option>
+</select>
       </div>
 
       <div class="input-group">
         <label for="filtro-cidade">Cidade ou região</label>
         <select id="filtro-cidade">
-          <option value="João Pessoa">João Pessoa</option>
-          <option value="Campina Grande">Campina Grande</option>
+           <option value="João Pessoa">João Pessoa</option>
+            <option value="Campina Grande">Campina Grande</option>
+            <option value="Patos">Patos</option>
+            <option value="Sousa">Sousa</option>
+            <option value="Cajazeiras">Cajazeiras</option>
         </select>
       </div>
 
@@ -71,6 +79,6 @@
   </main>
 
   <script src="../js/paciente_js/configName.js"></script>
-
+  <script src="../js/paciente_js/buscarMedico.js"></script>
 </body>
 </html>

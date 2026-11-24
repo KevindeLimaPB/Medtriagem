@@ -27,10 +27,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             const welcomeTitle = document.getElementById("welcome-title");
 
             if (userGreeting) {
-                userGreeting.textContent = `Olá, Dr(a). ${nomeExibicao}`;
+                userGreeting.textContent = `Olá,  ${nomeExibicao}`;
             }
             if (welcomeTitle) {
-                welcomeTitle.textContent = `Olá, Dr(a). ${nomeExibicao}`;
+                welcomeTitle.textContent = `Olá, ${nomeExibicao}`;
             }
         } else {
             console.error("Erro na API ao buscar o nome. Status:", resposta.status);

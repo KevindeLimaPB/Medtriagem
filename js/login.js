@@ -111,7 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
   localStorage.setItem('userCpf', documentValue); 
 
   alert('Login realizado com sucesso!');
-  window.location.href = 'paciente.html'; 
+  window.location.href = perfilAtivo === 'profissional'
+    ? 'tela_medico/medico.html'
+    : 'paciente.html';
 } else {
           alert('Credenciais inválidas. Verifique seu CPF/Matrícula e senha.');
         }
