@@ -47,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
       inputId.value = "";
 
       if (firstTimeBox) {
-        // Estado inicial: primeiro acesso do paciente
         firstTimeBox.style.display = "block";
         if (firstTimeText) firstTimeText.textContent = "Primeira vez aqui?";
         if (firstTimeLink) {
@@ -103,18 +102,24 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify(dadosLogin)
         });
 
-       if (resposta.ok) {
-  const resultado = await resposta.json();
-  localStorage.setItem('token', resultado.token);
-  
-  // Salva o CPF/Matrícula que o usuário digitou
-  localStorage.setItem('userCpf', documentValue); 
+        if (resposta.ok) {
+          const resultado = await resposta.json();
+          localStorage.setItem('token', resultado.token);
+          
+          // Separa o armazenamento conforme o perfil logado
+          if (perfilAtivo === 'profissional') {
+            localStorage.setItem('matriculaMedico', documentValue);
+            localStorage.removeItem('userCpf'); // Limpa resquício de paciente
+          } else {
+            localStorage.setItem('userCpf', documentValue);
+            localStorage.removeItem('matriculaMedico'); // Limpa resquício de médico
+          }
 
-  alert('Login realizado com sucesso!');
-  window.location.href = perfilAtivo === 'profissional'
-    ? 'tela_medico/medico.html'
-    : 'paciente.html';
-} else {
+          alert('Login realizado com sucesso!');
+          window.location.href = perfilAtivo === 'profissional'
+            ? 'tela_medico/medico.html'
+            : 'paciente.html';
+        } else {
           alert('Credenciais inválidas. Verifique seu CPF/Matrícula e senha.');
         }
 
@@ -127,22 +132,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 4. Funcionalidade do botão de alternar visualização da senha (o "olho")
-  const botoesToggleSenha = document.querySelectorAll('.toggle-password');
+const botoesToggleSenha = document.querySelectorAll('.toggle-password');
 
-  botoesToggleSenha.forEach(button => {
-    button.addEventListener('click', () => {
-      // Encontra o input que está dentro do mesmo container (.input-wrapper)
-      const inputWrapper = button.closest('.input-wrapper');
-      const input = inputWrapper ? inputWrapper.querySelector('input') : null;
+botoesToggleSenha.forEach(button => {
+  button.addEventListener('click', () => {
+    const inputWrapper = button.closest('.input-wrapper');
+    const input = inputWrapper ? inputWrapper.querySelector('input') : null;
 
-      if (input) {
-        // Alterna entre 'password' e 'text'
-        const tipoAtual = input.getAttribute('type');
-        if (tipoAtual === 'password') {
-          input.setAttribute('type', 'text');
-        } else {
-          input.setAttribute('type', 'password');
-        }
-      }
-    });
+    if (input) {
+      const tipoAtual = input.getAttribute('type');
+      input.setAttribute('type', tipoAtual === 'password' ? 'text' : 'password');
+    }
   });
+});
