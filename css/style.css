@@ -370,6 +370,11 @@ body {
   margin-bottom: 12px;
 }
 
+.badge-waiting.badge-cancelled {
+  background-color: #FEE2E2;
+  color: #B91C1C;
+}
+
 @media (max-width: 640px) {
   .dashboard-main .next-appointment-card:not(.empty-state) {
     flex-direction: column;

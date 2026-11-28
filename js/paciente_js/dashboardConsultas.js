@@ -10,37 +10,78 @@
 
     if (!pacienteCpf || !token) return;
 
+    const cpfLimpo = pacienteCpf.replace(/\D/g, "");
+
     async function carregarConsultasDashboard() {
         try {
-            // Corrigido para /consulta/{cpf} conforme o Controller
-            const resposta = await fetch(`${API_URL}/consulta/${pacienteCpf}`, {
-                headers: { Authorization: `Bearer ${token}` }
+            const resposta = await fetch(`${API_URL}/consulta/${cpfLimpo}`, {
+                headers: { Authorization: `Bearer ${token}` },
+                cache: "no-store"
             });
 
             if (!resposta.ok) {
+                const detalhe = await resposta.text().catch(() => "");
+                console.error("Falha ao listar consultas:", resposta.status, detalhe);
                 mostrarSemConsulta();
                 return;
             }
 
-            let consultas = await resposta.json();
+            const resultado = await resposta.json();
+            console.log("Consultas recebidas:", resultado);
 
-            if (!consultas || consultas.length === 0) {
+            const consultasRecebidas = Array.isArray(resultado)
+                ? resultado
+                : resultado.consultas || resultado.content || [];
+            const consultas = Array.isArray(consultasRecebidas) ? consultasRecebidas : [];
+
+            salvarIdPaciente(consultas);
+
+            if (consultas.length === 0) {
                 mostrarSemConsulta();
                 return;
             }
 
-            consultas = await completarDadosDosMedicos(consultas);
+            // Mostra apenas as consultas que NÃO estão canceladas
+            const consultasAtivas = consultas
+                .filter((consulta) =>
+                    !ehConsultaCancelada(consulta) && !estaCanceladaLocalmente(consulta.id)
+                )
+                .sort((a, b) => dataEmMs(a) - dataEmMs(b));
 
-            if (consultas.length === 1) {
-                exibirUnicaConsulta(consultas[0]);
+            if (consultasAtivas.length === 0) {
+                mostrarSemConsulta();
+                return;
+            }
+
+            const consultasComMedicos = await completarDadosDosMedicos(consultasAtivas);
+
+            if (consultasComMedicos.length === 1) {
+                exibirUnicaConsulta(consultasComMedicos[0]);
             } else {
-                exibirMultiplasConsultas(consultas);
+                exibirMultiplasConsultas(consultasComMedicos);
             }
 
         } catch (erro) {
             console.error("Erro ao carregar consultas do painel:", erro);
             mostrarSemConsulta();
         }
+    }
+
+    function salvarIdPaciente(consultas) {
+        const primeira = consultas.find((consulta) =>
+            consulta.paciente?.id || consulta.pacienteId || consulta.idPaciente
+        );
+        const idPaciente = primeira?.paciente?.id || primeira?.pacienteId || primeira?.idPaciente;
+        if (idPaciente != null) {
+            localStorage.setItem("userId", String(idPaciente));
+            localStorage.setItem("userIdTipo", "paciente");
+            localStorage.setItem("userIdCpf", cpfLimpo);
+        }
+    }
+
+    function dataEmMs(consulta) {
+        const data = new Date(obterDataConsulta(consulta));
+        return Number.isNaN(data.getTime()) ? Infinity : data.getTime();
     }
 
     async function completarDadosDosMedicos(consultas) {
@@ -95,31 +136,35 @@
     }
 
     function mostrarSemConsulta() {
-        cardComConsulta.style.display = "none";
-        multiplasConsultasContainer.style.display = "none";
-        cardSemConsulta.style.display = "flex";
+        if (cardComConsulta) cardComConsulta.style.display = "none";
+        if (multiplasConsultasContainer) multiplasConsultasContainer.style.display = "none";
+        if (cardSemConsulta) cardSemConsulta.style.display = "flex";
     }
 
     function exibirUnicaConsulta(c) {
-        cardSemConsulta.style.display = "none";
-        multiplasConsultasContainer.style.display = "none";
-        cardComConsulta.style.display = "flex";
+        if (cardSemConsulta) cardSemConsulta.style.display = "none";
+        if (multiplasConsultasContainer) multiplasConsultasContainer.style.display = "none";
+        if (cardComConsulta) cardComConsulta.style.display = "flex";
 
         document.getElementById("appointment-date").textContent = formatarDataHora(obterDataConsulta(c));
         document.getElementById("appointment-doctor").textContent = formatarMedico(c);
         document.getElementById("appointment-location").textContent = obterLocal(c);
-        atualizarStatus(cardComConsulta.querySelector(".badge-waiting"), c);
+
+        const badge = cardComConsulta.querySelector(".badge-waiting");
+        if (badge) atualizarStatus(badge, c);
 
         const btnDetalhes = document.getElementById("btn-ver-detalhes");
-        btnDetalhes.onclick = () => abrirDetalhes(c);
+        if (btnDetalhes) btnDetalhes.onclick = () => abrirDetalhes(c);
     }
 
     function exibirMultiplasConsultas(consultas) {
-        cardComConsulta.style.display = "none";
-        cardSemConsulta.style.display = "none";
-        multiplasConsultasContainer.style.display = "block";
+        if (cardComConsulta) cardComConsulta.style.display = "none";
+        if (cardSemConsulta) cardSemConsulta.style.display = "none";
+        if (multiplasConsultasContainer) multiplasConsultasContainer.style.display = "block";
 
+        if (!listaConsultasDashboard) return;
         listaConsultasDashboard.replaceChildren();
+
         consultas.forEach((c) => {
             const card = document.createElement("div");
             card.className = "next-appointment-card";
@@ -163,7 +208,7 @@
             btnCancelar.className = "btn btn-danger";
             btnCancelar.style.cssText = "background-color: #B91C1C; color: white;";
             btnCancelar.textContent = "Cancelar";
-            btnCancelar.addEventListener("click", () => window.cancelarConsulta(c.id));
+            btnCancelar.addEventListener("click", () => abrirCancelamento(c));
 
             acoes.append(btnDetalhes, btnReagendar, btnCancelar);
             card.append(info, acoes);
@@ -177,6 +222,12 @@
         if (consulta.id != null) parametros.set("id", consulta.id);
         const query = parametros.toString();
         window.location.href = `tela_paciente/detalhesConsulta.html${query ? `?${query}` : ""}`;
+    }
+
+    function abrirCancelamento(consulta) {
+        sessionStorage.setItem("consultaSelecionada", JSON.stringify(consulta));
+        const query = consulta.id != null ? `?id=${encodeURIComponent(consulta.id)}` : "";
+        window.location.href = `tela_paciente/cancelarConsulta.html${query}`;
     }
 
     function formatarDataHora(dataStr) {
@@ -264,31 +315,35 @@
 
     function atualizarStatus(elemento, consulta) {
         const status = obterValorTexto(consulta.status || consulta.estado || consulta.situacao);
-        elemento.textContent = status
+        const textoStatus = status
             ? status.replace(/_/g, " ").toLocaleLowerCase("pt-BR").replace(/^./, (letra) => letra.toLocaleUpperCase("pt-BR"))
             : "Em aguardo";
+        elemento.textContent = textoStatus;
+        elemento.classList.toggle("badge-cancelled", ehConsultaCancelada(consulta));
     }
 
-    window.cancelarConsulta = async function(idConsulta) {
-        if (!confirm("Deseja realmente cancelar esta consulta?")) return;
+    function ehConsultaCancelada(consulta) {
+        const status = obterValorTexto(consulta.status || consulta.estado || consulta.situacao);
+        return Boolean(consulta.canceladaEm) || /cancelad/i.test(status);
+    }
 
+    function estaCanceladaLocalmente(idConsulta) {
+        if (idConsulta == null) return false;
         try {
-            const resposta = await fetch(`${API_URL}/consulta/${idConsulta}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            if (!resposta.ok) throw new Error("Não foi possível cancelar.");
-
-            alert("Consulta cancelada com sucesso.");
-            carregarConsultasDashboard();
+            const canceladas = JSON.parse(localStorage.getItem("medtriageConsultasCanceladas") || "{}");
+            return Object.prototype.hasOwnProperty.call(canceladas, String(idConsulta));
         } catch (erro) {
-            console.error(erro);
-            alert("Erro ao cancelar consulta.");
+            console.error("Não foi possível verificar consultas canceladas localmente:", erro);
+            return false;
         }
+    }
+
+    window.cancelarConsulta = function (idConsulta) {
+        const query = idConsulta != null ? `?id=${encodeURIComponent(idConsulta)}` : "";
+        window.location.href = `tela_paciente/cancelarConsulta.html${query}`;
     };
 
-    window.reagendarConsulta = function(idConsulta) {
+    window.reagendarConsulta = function () {
         alert("Funcionalidade de reagendamento em desenvolvimento.");
     };
 

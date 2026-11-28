@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Cancelar consulta - MedTriage</title>
+	<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+	<header class="patient-header">
+		<div class="patient-header-container">
+			<div class="brand" style="margin-bottom: 0;">
+				<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<rect x="2" y="2" width="20" height="20" rx="4" fill="currentColor"/>
+					<path d="M12 6V18M6 12H18" stroke="white" stroke-width="3" stroke-linecap="round"/>
+				</svg>
+				<span>MedTriage</span>
+			</div>
+			<nav class="patient-nav">
+				<a href="../paciente.html">Início</a>
+				<a href="especialistas.html">Agendar consulta</a>
+				<a href="lados.html">Histórico de laudos</a>
+			</nav>
+			<div class="patient-user-area">
+				<span class="user-greeting" id="user-greeting"></span>
+				<button id="btn-logout" class="btn-outline" style="padding: 8px 16px; width: auto;">Sair</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="dashboard-main">
+		<a href="detalhesConsulta.html" class="back-link-page" id="link-voltar-detalhes">Voltar para os detalhes</a>
+
+		<section class="cancelamento-container">
+			<div class="cancelamento-card">
+				<h1 class="cancelamento-titulo">Cancelar consulta</h1>
+				<p class="cancelamento-subtitulo">Tem certeza que deseja cancelar esta consulta? Esta ação não pode ser desfeita.</p>
+
+				<div class="cancelamento-dados">
+					<div class="cancelamento-item"><label>Data e horário</label><p id="cancel-data">Carregando...</p></div>
+					<div class="cancelamento-item"><label>Médico</label><p id="cancel-medico">Carregando...</p></div>
+					<div class="cancelamento-item"><label>Serviço</label><p id="cancel-servico">Carregando...</p></div>
+					<div class="cancelamento-item"><label>Local</label><p id="cancel-local">Carregando...</p></div>
+				</div>
+
+				<div class="cancelamento-acoes">
+					<a href="detalhesConsulta.html" class="btn btn-outline" id="btn-voltar">Voltar</a>
+					<button type="button" id="btn-confirmar-cancelamento" class="btn btn-perigo">Sim, cancelar consulta</button>
+				</div>
+				<p id="aviso-pagina" role="status" aria-live="polite" style="display: none; margin-top: 20px;"></p>
+			</div>
+		</section>
+	</main>
+
+	<script src="../js/paciente_js/menu.js"></script>
+	<script src="../js/paciente_js/cancelar.js"></script>
+</body>
+</html>

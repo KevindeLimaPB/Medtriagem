@@ -7,13 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById("login-form");
   const firstTimeBox = document.querySelector(".first-time-box");
 
-  // Referências aos textos da caixa inferior. Elas mudam conforme o perfil.
   const firstTimeText = firstTimeBox ? firstTimeBox.querySelector("p") : null;
   const firstTimeLink = firstTimeBox ? firstTimeBox.querySelector("a") : null;
 
   let perfilAtivo = "paciente";
 
-  // 1. Alternância entre Paciente e Profissional
   if (btnPaciente && btnProfissional) {
     btnPaciente.addEventListener("click", () => {
       perfilAtivo = "paciente";
@@ -21,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btnPaciente.classList.add("active");
       btnProfissional.classList.remove("active");
 
-      // Ao voltar para paciente, restabelecemos o CPF e o cadastro paciente.
       labelId.textContent = "CPF";
       inputId.placeholder = "000.000.000-00";
       inputId.value = "";
@@ -56,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // 2. Máscara dinâmica de CPF ou Matrícula
     inputId.addEventListener("input", function (e) {
       if (perfilAtivo === "profissional") {
         e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
@@ -106,13 +102,39 @@ document.addEventListener('DOMContentLoaded', () => {
           const resultado = await resposta.json();
           localStorage.setItem('token', resultado.token);
           
-          // Separa o armazenamento conforme o perfil logado
           if (perfilAtivo === 'profissional') {
             localStorage.setItem('matriculaMedico', documentValue);
-            localStorage.removeItem('userCpf'); // Limpa resquício de paciente
+            localStorage.removeItem('userCpf');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userIdTipo');
+            localStorage.removeItem('userIdCpf');
           } else {
+            const cpfAtual = documentValue.replace(/\D/g, '');
+            const idSalvo = Number(localStorage.getItem('userId'));
+            const mesmoPaciente = Number.isInteger(idSalvo) && idSalvo > 0 && (
+              (localStorage.getItem('userIdTipo') === 'paciente'
+                && localStorage.getItem('userIdCpf') === cpfAtual)
+              || (!localStorage.getItem('userIdTipo')
+                && (localStorage.getItem('userCpf') || '').replace(/\D/g, '') === cpfAtual)
+            );
             localStorage.setItem('userCpf', documentValue);
-            localStorage.removeItem('matriculaMedico'); // Limpa resquício de médico
+            localStorage.removeItem('matriculaMedico');
+
+            // Não confundir o ID genérico do usuário com o ID da entidade paciente.
+            if (mesmoPaciente && !localStorage.getItem('userIdTipo')) {
+              localStorage.setItem('userIdTipo', 'paciente');
+              localStorage.setItem('userIdCpf', cpfAtual);
+            } else if (!mesmoPaciente) {
+              localStorage.removeItem('userId');
+              localStorage.removeItem('userIdTipo');
+              localStorage.removeItem('userIdCpf');
+            }
+            const pacienteId = resultado.pacienteId || resultado.idPaciente || resultado.patientId;
+            if (pacienteId && Number.isInteger(Number(pacienteId)) && Number(pacienteId) > 0) {
+              localStorage.setItem('userId', String(pacienteId));
+              localStorage.setItem('userIdTipo', 'paciente');
+              localStorage.setItem('userIdCpf', cpfAtual);
+            }
           }
 
           alert('Login realizado com sucesso!');
