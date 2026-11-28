@@ -63,8 +63,23 @@ function renderizarMedicos(medicos) {
     }
 
     medicos.forEach((m) => {
-        const card = document.createElement("div");
-        card.className = "doctor-card"; // troque se o seu CSS usar outro nome de classe
+        const card = document.createElement("a");
+        card.className = "doctor-card";
+        card.href = "agendar_one.html";
+        card.setAttribute("aria-label", `Agendar consulta com ${m.nome ?? "médico"}`);
+        card.addEventListener("click", () => {
+            const medicoSelecionado = {
+                id: m.id ?? m.idMedico ?? m.medicoId ?? "",
+                nome: m.nome ?? "",
+                crm: m.crm ?? "",
+                especialidade: nomesEspecialidade[m.especialidade] || m.especialidade || "",
+                preco: m.precoConsulta ?? "",
+                cidade: m.cidade ?? "",
+                bairro: m.bairro ?? "",
+                rua: m.rua ?? ""
+            };
+            sessionStorage.setItem("medicoSelecionado", JSON.stringify(medicoSelecionado));
+        });
         card.innerHTML = `
             <h3>${escapar(m.nome)}</h3>
             <p>${escapar(nomesEspecialidade[m.especialidade] || m.especialidade)} · ${escapar(m.cidade)}</p>

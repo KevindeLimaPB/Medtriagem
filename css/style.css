@@ -547,6 +547,20 @@ body {
   gap: 20px;
 }
 
+a.doctor-card {
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+a.doctor-card:hover,
+a.doctor-card:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 4px 14px rgba(0, 90, 141, 0.12);
+  transform: translateY(-2px);
+  outline: none;
+}
+
 .doctor-info {
   display: flex;
   gap: 20px;
@@ -870,6 +884,13 @@ body {
   cursor: pointer;
   background: var(--bg-surface);
   transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  min-height: 64px;
 }
 
 .dia-item.selected {
@@ -887,12 +908,14 @@ body {
   font-weight: 600;
   font-size: 14px;
   color: var(--text-main);
+  white-space: nowrap;
+  line-height: 1.2;
 }
 
 .dia-data {
   font-size: 12px;
   color: var(--text-muted);
-  margin-top: 4px;
+  line-height: 1.2;
 }
 
 .horarios-grid {
@@ -998,6 +1021,237 @@ body {
 .action-buttons {
   display: flex;
   gap: 16px;
+}
+
+@media (max-width: 700px) {
+  .booking-page .booking-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .booking-page .booking-summary {
+    position: static;
+  }
+
+  .booking-page .stepper {
+    gap: 10px;
+  }
+
+  .booking-page .step-line {
+    flex: 1 1 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .booking-page .dias-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    text-align: center;
+  }
+
+  .booking-page .dia-item {
+    min-height: 68px;
+    padding: 10px 6px;
+  }
+
+  .booking-page .dia-semana {
+    font-size: 13px;
+  }
+
+  .booking-page .dia-data {
+    font-size: 12px;
+  }
+
+  .booking-page .horarios-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .booking-page .action-buttons {
+    flex-direction: column-reverse;
+  }
+
+  .booking-page .action-buttons .btn {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .booking-page .stepper {
+    gap: 6px;
+  }
+
+  .booking-page .step {
+    gap: 5px;
+    font-size: 12px;
+  }
+
+  .booking-page .step-circle {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Layout específico da tela de agendamento em celulares e telas estreitas */
+@media (max-width: 760px) {
+  .booking-page .patient-header {
+    padding: 12px 0 0;
+  }
+
+  .booking-page .patient-header-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px 8px;
+    padding: 0 16px;
+  }
+
+  .booking-page .brand {
+    gap: 8px;
+    font-size: 20px;
+  }
+
+  .booking-page .brand svg {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+  }
+
+  .booking-page .patient-user-area {
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .booking-page .patient-user-area .user-greeting {
+    max-width: 84px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .booking-page #btn-logout {
+    padding: 8px 12px !important;
+    white-space: nowrap;
+  }
+
+  .booking-page .patient-nav {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    margin: 0 -16px;
+    padding: 0 12px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .booking-page .patient-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 8px 4px 7px;
+    text-align: center;
+    line-height: 1.25;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  .booking-page .dashboard-main {
+    padding: 24px 16px 36px;
+  }
+
+  .booking-page .welcome-title {
+    margin: 0 0 20px !important;
+    font-size: clamp(24px, 6vw, 30px);
+    line-height: 1.2;
+  }
+
+  .booking-page .back-link-page {
+    margin-bottom: 20px;
+  }
+
+  .booking-page .section-title {
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  .booking-page .stepper {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 24px;
+    padding: 12px 8px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+  }
+
+  .booking-page .step {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 6px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  .booking-page .step-line {
+    display: none;
+  }
+
+  .booking-page .booking-layout > div:first-child {
+    min-width: 0;
+  }
+
+  .booking-page .booking-summary {
+    padding: 18px;
+  }
+
+  .booking-page .summary-medico-info {
+    margin-bottom: 18px;
+  }
+
+  .booking-page .summary-medico-info > div:last-child,
+  .booking-page .summary-item,
+  .booking-page .summary-item span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .booking-page #aviso-agendamento {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 380px) {
+  .booking-page .patient-header-container {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .booking-page .brand {
+    font-size: 18px;
+  }
+
+  .booking-page .patient-user-area .user-greeting {
+    max-width: 62px;
+  }
+
+  .booking-page .patient-nav {
+    margin-right: -12px;
+    margin-left: -12px;
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .booking-page .patient-nav a {
+    font-size: 11px;
+  }
+
+  .booking-page .dashboard-main {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
 }
 
 /* ===== PERFIL DO MÉDICO (EDITAR) ===== */
@@ -1791,3 +2045,287 @@ body {
             width: 100%;
           }
         }
+
+/* Correções de layout mobile da tela de agendamento */
+@media screen and (max-width: 760px) {
+  body.booking-page .patient-header-container {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 10px 8px !important;
+    padding: 0 14px !important;
+  }
+
+  body.booking-page .patient-nav {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    margin: 0 -14px !important;
+    padding: 0 8px !important;
+    border-top: 1px solid var(--border-color);
+  }
+
+  body.booking-page .patient-user-area {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    justify-self: end;
+    align-self: center;
+    margin: 0;
+  }
+
+  body.booking-page .patient-nav a {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    min-height: 48px;
+    padding: 8px 3px !important;
+    font-size: 12px !important;
+    line-height: 1.2;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  body.booking-page .patient-user-area .user-greeting {
+    display: none !important;
+  }
+
+  body.booking-page #btn-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 6px 10px !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: var(--primary);
+    box-shadow: none !important;
+  }
+
+  body.booking-page .booking-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 22px !important;
+    width: 100%;
+  }
+
+  body.booking-page .booking-layout > *,
+  body.booking-page .booking-layout > div:first-child {
+    width: 100%;
+    min-width: 0;
+  }
+
+  body.booking-page .booking-summary {
+    position: static !important;
+    width: 100%;
+    min-width: 0;
+  }
+
+  body.booking-page #form-etapa2,
+  body.booking-page #form-etapa2 .input-group,
+  body.booking-page #form-etapa2 .input-select,
+  body.booking-page #form-etapa2 input[type="text"] {
+    width: 100%;
+    min-width: 0;
+  }
+
+  body.booking-page #form-etapa2 input[type="text"],
+  body.booking-page #form-etapa2 .input-select {
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    color: var(--text-main);
+    font: inherit;
+    font-size: 16px;
+    line-height: 1.4;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  body.booking-page #form-etapa2 input[type="text"]:focus,
+  body.booking-page #form-etapa2 .input-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 90, 141, 0.12);
+  }
+
+  body.booking-page #form-etapa2 input[type="text"]::placeholder {
+    color: #94A3B8;
+    opacity: 1;
+  }
+
+  body.booking-page #form-etapa2 .input-group {
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  body.booking-page #form-etapa2 .helper-text {
+    line-height: 1.45;
+  }
+
+  body.booking-page .tipo-consulta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  body.booking-page .tipo-consulta-grid .radio-card {
+    min-height: 52px;
+    padding: 12px;
+  }
+
+  body.booking-page .label-pergunta {
+    display: block;
+    line-height: 1.45;
+  }
+
+  body.booking-page .stepper {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: start;
+    gap: 6px !important;
+    padding: 12px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-surface);
+  }
+
+  body.booking-page .step {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start;
+    gap: 6px;
+    min-width: 0;
+    font-size: 11px;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  body.booking-page .step-line {
+    display: none !important;
+  }
+
+  body.booking-page .dias-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100%;
+  }
+
+  body.booking-page .dia-item {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    min-width: 0;
+    min-height: 64px;
+    padding: 8px 5px;
+    white-space: normal;
+  }
+
+  body.booking-page .dia-semana {
+    max-width: 100%;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  body.booking-page .dia-data {
+    display: block;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  body.booking-page .horarios-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  body.booking-page .action-buttons {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+    gap: 10px;
+  }
+
+  body.booking-page .action-buttons .btn {
+    width: 100% !important;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  body.booking-page .patient-header-container {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+  }
+
+  body.booking-page .brand {
+    gap: 7px;
+    font-size: 18px;
+  }
+
+  body.booking-page .patient-user-area {
+    gap: 6px;
+  }
+
+  body.booking-page .patient-user-area .user-greeting {
+    max-width: 58px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  body.booking-page .patient-nav {
+    margin-right: -10px !important;
+    margin-left: -10px !important;
+  }
+
+  body.booking-page .patient-nav a {
+    font-size: 11px !important;
+  }
+
+  body.booking-page .dashboard-main {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+}
+
+/* Campos da etapa 2 com aparência consistente em desktop e mobile */
+body.booking-page #form-etapa2 input[type="text"],
+body.booking-page #form-etapa2 .input-select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.4;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+body.booking-page #form-etapa2 input[type="text"]:focus,
+body.booking-page #form-etapa2 .input-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 90, 141, 0.12);
+}
+
+body.booking-page #form-etapa2 input[type="text"]::placeholder {
+  color: #94A3B8;
+  opacity: 1;
+}
+
+body.booking-page #form-etapa2 .input-group {
+  width: 100%;
+}
